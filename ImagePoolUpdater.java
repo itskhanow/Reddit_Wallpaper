@@ -41,7 +41,7 @@ public class ImagePoolUpdater extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if (intent != null && connected()) {
             // TODO: Get subreddits from sharedpreferences
-            String subreddits = "http://www.reddit.com/r/wallpapers/.json";
+            String subreddits = "http://www.reddit.com/user/itskhanow/m/wallpapers.json";
             try {
                 JSONObject listing = new JSONObject(getListing(subreddits));
                 JSONArray links = listing.getJSONObject("data").getJSONArray("children");
@@ -49,7 +49,9 @@ public class ImagePoolUpdater extends IntentService {
                     JSONObject thingData = links.getJSONObject(i).getJSONObject("data");
                     String thingID = thingData.getString("id");
                     String thingURL = thingData.getString("url");
-                    saveImage(thingID, thingURL);
+                    if (thingURL.endsWith(".jpg") || thingURL.endsWith(".png")) {
+                        saveImage(thingID, thingURL);
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -104,7 +106,7 @@ public class ImagePoolUpdater extends IntentService {
                 e.printStackTrace();
             } finally {
                 try {
-                    fos.close();
+                    if (fos != null) fos.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
