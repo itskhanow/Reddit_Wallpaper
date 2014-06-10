@@ -30,7 +30,11 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return images.length;
+        if (images != null) {
+            return images.length;
+        } else {
+            return 0;
+        }
     }
 
     @Override
@@ -48,11 +52,10 @@ public class ImageAdapter extends BaseAdapter {
         ImageView view = (ImageView) convertView;
         if (view == null) {
             view = new ImageView(mContext);
-            view.setLayoutParams(new GridView.LayoutParams(90, 90));
+            view.setLayoutParams(new GridView.LayoutParams(200, 200));
             view.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            view.setPadding(8, 8, 8, 8);
         }
-        Picasso.with(mContext).load(getItem(position)).resize(90, 90).centerCrop().into(view);
+        Picasso.with(mContext).load(getItem(position)).resize(200, 200).centerCrop().into(view);
         return view;
     }
 }

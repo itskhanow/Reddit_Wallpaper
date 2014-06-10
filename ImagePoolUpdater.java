@@ -14,14 +14,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -40,8 +41,14 @@ public class ImagePoolUpdater extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null && connected()) {
+            File dir = new File(DIR);
+            if (!dir.exists()) {
+                //noinspection ResultOfMethodCallIgnored
+                dir.mkdir();
+            }
+
             // TODO: Get subreddits from sharedpreferences
-            String subreddits = "http://www.reddit.com/user/itskhanow/m/wallpapers.json";
+            String subreddits = "http://www.reddit.com/r/wallpaper+wallpapers+minimalwallpaper.json";
             try {
                 JSONObject listing = new JSONObject(getListing(subreddits));
                 JSONArray links = listing.getJSONObject("data").getJSONArray("children");
@@ -57,6 +64,18 @@ public class ImagePoolUpdater extends IntentService {
                 e.printStackTrace();
             }
             sendBroadcast(new Intent(ImagePoolUpdater.BROADCAST_UPDATED));
+            clearOld();
+        }
+    }
+
+    protected void clearOld() {
+        File[] images = new File(DIR).listFiles();
+        for (File image : images) {
+            // Check if image is older than a day
+            if (image.lastModified() + 86400000 < System.currentTimeMillis()) {
+                //noinspection ResultOfMethodCallIgnored
+                image.delete();
+            }
         }
     }
 
@@ -72,7 +91,6 @@ public class ImagePoolUpdater extends IntentService {
             URL url = new URL(location);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             stream = new BufferedInputStream(urlConnection.getInputStream());
-            urlConnection.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -97,12 +115,12 @@ public class ImagePoolUpdater extends IntentService {
         String filename = id + ".jpg";
         File file = new File(DIR, filename);
         if (!file.exists()) {
-            FileOutputStream fos = null;
+            OutputStream fos = null;
             try {
-                fos = new FileOutputStream(file);
+                fos = new BufferedOutputStream(new FileOutputStream(file));
                 Bitmap bmp = BitmapFactory.decodeStream(downloadStream(url));
                 bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            } catch (FileNotFoundException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             } finally {
                 try {
