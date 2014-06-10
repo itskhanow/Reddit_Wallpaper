@@ -15,13 +15,16 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
-
 public class MainActivity extends ActionBarActivity {
+    protected GridView gridView;
+    protected ImageView imageView;
+    protected ImageAdapter imageAdapter;
+    protected String previewImage;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            // TODO: Refresh album view
+            refreshGrid();
         }
     };
 
@@ -30,19 +33,18 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        GridView gridView = (GridView) findViewById(R.id.gridview);
-        final ImageView imageView = (ImageView) findViewById(R.id.preview);
-        final ImageAdapter imageAdapter = new ImageAdapter(this);
-        gridView.setAdapter(imageAdapter);
+        gridView = (GridView) findViewById(R.id.gridview);
+        imageView = (ImageView) findViewById(R.id.preview);
+        refreshGrid();
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                previewImage = imageAdapter.getItem(position).getAbsolutePath();
                 Picasso.with(getApplicationContext()).load(imageAdapter.getItem(position)).into(imageView);
             }
         });
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -57,8 +59,24 @@ public class MainActivity extends ActionBarActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        return id == R.id.action_settings || super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.action_shuffle:
+                startService(new Intent(getApplicationContext(), WallpaperChanger.class));
+                return true;
+            case R.id.action_refresh:
+                startService(new Intent(getApplicationContext(), ImagePoolUpdater.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void setWallpaper(View view) {
+        if (previewImage != null) {
+            Intent intent = new Intent(getApplicationContext(), WallpaperChanger.class);
+            intent.putExtra("image", previewImage);
+            startService(intent);
+        }
     }
 
     @Override
@@ -73,4 +91,8 @@ public class MainActivity extends ActionBarActivity {
         unregisterReceiver(receiver);
     }
 
+    protected  void refreshGrid() {
+        imageAdapter = new ImageAdapter(this);
+        gridView.setAdapter(imageAdapter);
+    }
 }

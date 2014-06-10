@@ -56,7 +56,7 @@ public class ImagePoolUpdater extends IntentService {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            // TODO: Broadcast image pool updated
+            sendBroadcast(new Intent(ImagePoolUpdater.BROADCAST_UPDATED));
         }
     }
 
