@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 
 public class BootReceiver extends BroadcastReceiver {
     public BootReceiver() { }
@@ -12,7 +13,7 @@ public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
-
+            SharedPreferences prefs = context.getSharedPreferences("com.itskhanow.redditwallpaper.wallpaperchanger", Context.MODE_PRIVATE);
             // Set the AlarmManager to run the service that updates the image pool
             Intent iUpdateImagePool = new Intent(context, ImagePoolUpdater.class);
             PendingIntent piUpdateImagePool = PendingIntent.getService(context, 0, iUpdateImagePool, 0);
@@ -26,11 +27,11 @@ public class BootReceiver extends BroadcastReceiver {
             Intent iChangeWallpaper = new Intent(context, WallpaperChanger.class);
             PendingIntent piChangeWallpaper = PendingIntent.getService(context, 0, iChangeWallpaper, 0);
             AlarmManager amChangeWallpaper = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-            // TODO: Grab interval from sharedpreferences
             amChangeWallpaper.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
-                    AlarmManager.INTERVAL_HALF_HOUR,
-                    AlarmManager.INTERVAL_HALF_HOUR,
+                    prefs.getLong("WALLPAPER_INTERVAL", AlarmManager.INTERVAL_HALF_HOUR),
+                    prefs.getLong("WALLPAPER_INTERVAL", AlarmManager.INTERVAL_HALF_HOUR),
                     piChangeWallpaper);
+            prefs.edit().putBoolean("SERVICE_STARTED", true).commit();
         }
     }
 }
