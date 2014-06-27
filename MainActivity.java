@@ -82,7 +82,7 @@ public class MainActivity extends ActionBarActivity {
 
     private void startServices() {
         SharedPreferences prefs = getSharedPreferences("com.itskhanow.redditwallpaper.wallpaperchanger", Context.MODE_PRIVATE);
-        if (!prefs.getBoolean("SERVICE_STARTED", false)) {
+        if (!prefs.getBoolean("pref_service_started", false)) {
             // Set the AlarmManager to run the service that updates the image pool
             Intent iUpdateImagePool = new Intent(this, ImagePoolUpdater.class);
             PendingIntent piUpdateImagePool = PendingIntent.getService(this, 0, iUpdateImagePool, 0);
@@ -97,10 +97,10 @@ public class MainActivity extends ActionBarActivity {
             PendingIntent piChangeWallpaper = PendingIntent.getService(this, 0, iChangeWallpaper, 0);
             AlarmManager amChangeWallpaper = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
             amChangeWallpaper.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
-                    prefs.getLong("WALLPAPER_INTERVAL", AlarmManager.INTERVAL_HALF_HOUR),
-                    prefs.getLong("WALLPAPER_INTERVAL", AlarmManager.INTERVAL_HALF_HOUR),
+                    prefs.getLong("pref_update_interval", AlarmManager.INTERVAL_HALF_HOUR),
+                    prefs.getLong("pref_update_interval", AlarmManager.INTERVAL_HALF_HOUR),
                     piChangeWallpaper);
-            prefs.edit().putBoolean("SERVICE_STARTED", true).commit();
+            prefs.edit().putBoolean("pref_service_started", true).commit();
         }
     }
 

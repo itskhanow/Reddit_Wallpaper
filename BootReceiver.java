@@ -28,10 +28,10 @@ public class BootReceiver extends BroadcastReceiver {
             PendingIntent piChangeWallpaper = PendingIntent.getService(context, 0, iChangeWallpaper, 0);
             AlarmManager amChangeWallpaper = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
             amChangeWallpaper.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
-                    prefs.getLong("WALLPAPER_INTERVAL", AlarmManager.INTERVAL_HALF_HOUR),
-                    prefs.getLong("WALLPAPER_INTERVAL", AlarmManager.INTERVAL_HALF_HOUR),
+                    prefs.getLong("pref_update_interval", AlarmManager.INTERVAL_HALF_HOUR),
+                    prefs.getLong("pref_update_interval", AlarmManager.INTERVAL_HALF_HOUR),
                     piChangeWallpaper);
-            prefs.edit().putBoolean("SERVICE_STARTED", true).commit();
+            prefs.edit().putBoolean("pref_service_started", true).commit();
         }
     }
 }

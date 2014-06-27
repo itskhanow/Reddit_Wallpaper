@@ -3,6 +3,7 @@ package com.itskhanow.redditwallpaper.wallpaperchanger;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
@@ -41,6 +42,7 @@ public class ImagePoolUpdater extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null && connected()) {
+            SharedPreferences prefs = getSharedPreferences("com.itskhanow.redditwallpaper.wallpaperchanger", Context.MODE_PRIVATE);
             File dir = new File(DIR);
             if (!dir.exists()) {
                 //noinspection ResultOfMethodCallIgnored
@@ -56,7 +58,12 @@ public class ImagePoolUpdater extends IntentService {
                     JSONObject thingData = links.getJSONObject(i).getJSONObject("data");
                     String thingID = thingData.getString("id");
                     String thingURL = thingData.getString("url");
-                    if (thingURL.endsWith(".jpg") || thingURL.endsWith(".png")) {
+                    boolean thingNSFW = thingData.getBoolean("over_18");
+                    // Only save image if it's a direct link
+                    // TODO: Create methods to grab images from within album link
+                    // Only save image if NSFW is allowed or it's SFW
+                    if ((thingURL.endsWith(".jpg") || thingURL.endsWith(".png"))
+                            && (prefs.getBoolean("pref_show_nsfw", false) || !thingNSFW)) {
                         saveImage(thingID, thingURL);
                     }
                 }
