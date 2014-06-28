@@ -31,7 +31,7 @@ public class BootReceiver extends BroadcastReceiver {
                     prefs.getLong("pref_update_interval", AlarmManager.INTERVAL_HALF_HOUR),
                     prefs.getLong("pref_update_interval", AlarmManager.INTERVAL_HALF_HOUR),
                     piChangeWallpaper);
-            prefs.edit().putBoolean("pref_service_started", true).commit();
+            prefs.edit().putBoolean("pref_service_started", true).apply();
         }
     }
 }
