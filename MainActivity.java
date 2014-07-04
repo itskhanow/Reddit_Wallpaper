@@ -1,15 +1,12 @@
 package com.itskhanow.redditwallpaper.wallpaperchanger;
 
-import android.app.AlarmManager;
-import android.app.FragmentManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -73,8 +70,7 @@ public class MainActivity extends ActionBarActivity {
                 startService(new Intent(getApplicationContext(), ImagePoolUpdater.class));
                 return true;
             case R.id.action_settings:
-                FragmentManager fManager = getFragmentManager();
-                fManager.beginTransaction().add(R.id.settings_fragment, new SettingsFragment()).commit();
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -84,24 +80,7 @@ public class MainActivity extends ActionBarActivity {
     private void startServices() {
         SharedPreferences prefs = getSharedPreferences("com.itskhanow.redditwallpaper.wallpaperchanger", Context.MODE_PRIVATE);
         if (!prefs.getBoolean("pref_service_started", false)) {
-            // Set the AlarmManager to run the service that updates the image pool
-            Intent iUpdateImagePool = new Intent(this, ImagePoolUpdater.class);
-            PendingIntent piUpdateImagePool = PendingIntent.getService(this, 0, iUpdateImagePool, 0);
-            AlarmManager amUpdateImagePool = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-            amUpdateImagePool.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
-                    AlarmManager.INTERVAL_FIFTEEN_MINUTES,
-                    AlarmManager.INTERVAL_HALF_DAY,
-                    piUpdateImagePool);
-
-            // Set the AlarmManager to run the service to periodically change the wallpaper
-            Intent iChangeWallpaper = new Intent(this, WallpaperChanger.class);
-            PendingIntent piChangeWallpaper = PendingIntent.getService(this, 0, iChangeWallpaper, 0);
-            AlarmManager amChangeWallpaper = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-            amChangeWallpaper.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
-                    prefs.getLong("pref_update_interval", AlarmManager.INTERVAL_HALF_HOUR),
-                    prefs.getLong("pref_update_interval", AlarmManager.INTERVAL_HALF_HOUR),
-                    piChangeWallpaper);
-            prefs.edit().putBoolean("pref_service_started", true).apply();
+            ServiceManager.startServices(this);
         }
     }
 
