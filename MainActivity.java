@@ -75,6 +75,7 @@ public class MainActivity extends ActionBarActivity {
             case R.id.action_settings:
                 FragmentManager fManager = getFragmentManager();
                 fManager.beginTransaction().add(R.id.settings_fragment, new SettingsFragment()).commit();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
