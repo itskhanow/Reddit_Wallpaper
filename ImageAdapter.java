@@ -17,12 +17,11 @@ import java.io.File;
  */
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
-    private File dir;
     private File[] images;
 
     public ImageAdapter(Context c) {
         mContext = c;
-        dir = new File(Environment.getExternalStorageDirectory().toString() + "/reddit_wallpaper/");
+        File dir = new File(Environment.getExternalStorageDirectory().toString() + "/reddit_wallpaper/");
         if (dir.isDirectory()) {
             images = dir.listFiles();
         }
