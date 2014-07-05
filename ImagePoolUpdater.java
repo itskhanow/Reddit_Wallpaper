@@ -66,6 +66,7 @@ public class ImagePoolUpdater extends IntentService {
                             && (prefs.getBoolean("pref_show_nsfw", false) || !thingNSFW)) {
                         saveImage(thingID, thingURL);
                     }
+                    // TODO: Show progress bar notification
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

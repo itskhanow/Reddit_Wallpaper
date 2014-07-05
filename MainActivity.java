@@ -47,6 +47,9 @@ public class MainActivity extends ActionBarActivity {
                 Picasso.with(getApplicationContext()).load(imageAdapter.getItem(position)).into(imageView);
             }
         });
+
+        // TODO: Preview images in separate activity
+        // TODO: Implement sidebar to manage subreddits
     }
 
     @Override

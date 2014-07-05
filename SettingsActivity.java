@@ -1,5 +1,6 @@
 package com.itskhanow.redditwallpaper.wallpaperchanger;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
@@ -57,12 +58,12 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     @Override
     protected void onResume() {
         super.onResume();
-        //getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        getSharedPreferences("com.itskhanow.redditwallpaper.wallpaperchanger", Context.MODE_PRIVATE).registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        //getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+        getSharedPreferences("com.itskhanow.redditwallpaper.wallpaperchanger", Context.MODE_PRIVATE).unregisterOnSharedPreferenceChangeListener(this);
     }
 }
