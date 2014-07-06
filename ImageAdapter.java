@@ -16,6 +16,7 @@ import java.io.File;
  *
  */
 public class ImageAdapter extends BaseAdapter {
+    public final int imageSize = 300;
     private Context mContext;
     private File[] images;
 
@@ -41,6 +42,8 @@ public class ImageAdapter extends BaseAdapter {
         return images[i];
     }
 
+    public File[] getImages() { return images; }
+
     @Override
     public long getItemId(int i) {
         return 0;
@@ -51,10 +54,10 @@ public class ImageAdapter extends BaseAdapter {
         ImageView view = (ImageView) convertView;
         if (view == null) {
             view = new ImageView(mContext);
-            view.setLayoutParams(new GridView.LayoutParams(200, 200));
+            //view.setLayoutParams(new GridView.LayoutParams(imageSize, imageSize));
             view.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
-        Picasso.with(mContext).load(getItem(position)).resize(200, 200).centerCrop().into(view);
+        Picasso.with(mContext).load(getItem(position)).resize(imageSize, imageSize).centerCrop().into(view);
         return view;
     }
 }

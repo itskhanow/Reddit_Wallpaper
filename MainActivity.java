@@ -12,15 +12,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
-
-import com.squareup.picasso.Picasso;
 
 public class MainActivity extends ActionBarActivity {
     protected GridView gridView;
-    protected ImageView imageView;
     protected ImageAdapter imageAdapter;
-    protected String previewImage;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -37,18 +32,17 @@ public class MainActivity extends ActionBarActivity {
         startServices();
 
         gridView = (GridView) findViewById(R.id.gridview);
-        imageView = (ImageView) findViewById(R.id.preview);
         refreshGrid();
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                previewImage = imageAdapter.getItem(position).getAbsolutePath();
-                Picasso.with(getApplicationContext()).load(imageAdapter.getItem(position)).into(imageView);
+                Intent iViewImage = new Intent(getApplicationContext(), ViewImageActivity.class);
+                iViewImage.putExtra("position", position);
+                startActivity(iViewImage);
             }
         });
 
-        // TODO: Preview images in separate activity
         // TODO: Implement sidebar to manage subreddits
     }
 
@@ -84,14 +78,6 @@ public class MainActivity extends ActionBarActivity {
         SharedPreferences prefs = getSharedPreferences("com.itskhanow.redditwallpaper.wallpaperchanger", Context.MODE_PRIVATE);
         if (!prefs.getBoolean("pref_service_started", false)) {
             ServiceManager.startServices(this);
-        }
-    }
-
-    public void setWallpaper(View view) {
-        if (previewImage != null) {
-            Intent intent = new Intent(getApplicationContext(), WallpaperChanger.class);
-            intent.putExtra("image", previewImage);
-            startService(intent);
         }
     }
 
