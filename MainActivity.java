@@ -1,5 +1,6 @@
 package com.itskhanow.redditwallpaper.wallpaperchanger;
 
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,8 +34,6 @@ public class MainActivity extends ActionBarActivity {
         }
 
         startServices();
-
-        // TODO: Implement sidebar to manage subreddits
     }
 
     @Override
@@ -50,6 +49,10 @@ public class MainActivity extends ActionBarActivity {
         switch (item.getItemId()) {
             case R.id.action_refresh:
                 startService(new Intent(getApplicationContext(), ImagePoolUpdater.class));
+                return true;
+            case R.id.action_manage:
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.image_grid, new SubredditFragment()).addToBackStack(null).commit();
                 return true;
             case R.id.action_settings:
                 startActivity(new Intent(this, SettingsActivity.class));

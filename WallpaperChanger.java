@@ -24,6 +24,7 @@ public class WallpaperChanger extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        // TODO: Resize image to fit
         if (intent != null) {
             if (intent.hasExtra(AppConstants.INTENT_EXTRA_IMAGE)) {
                 try {

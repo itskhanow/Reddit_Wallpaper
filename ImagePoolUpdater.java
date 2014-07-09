@@ -33,25 +33,22 @@ import java.util.ArrayList;
  */
 public class ImagePoolUpdater extends IntentService {
     public static final String DIR = Environment.getExternalStorageDirectory().toString() + AppConstants.IMAGE_DIR;
-    private SharedPreferences prefs;
 
     public ImagePoolUpdater() {
         super("ImagePoolUpdater");
-        prefs = getSharedPreferences(BuildConfig.PACKAGE_NAME, Context.MODE_PRIVATE);
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        SharedPreferences prefs = getSharedPreferences(BuildConfig.PACKAGE_NAME, Context.MODE_PRIVATE);
         if (intent != null && connected()) {
-            prefs = getSharedPreferences(BuildConfig.PACKAGE_NAME, Context.MODE_PRIVATE);
             File dir = new File(DIR);
             if (!dir.exists()) {
                 //noinspection ResultOfMethodCallIgnored
                 dir.mkdir();
             }
 
-            // TODO: Get subreddits from sharedpreferences
-            String subredditsURL = buildURL();
+            String subredditsURL = buildURL(prefs);
             try {
                 JSONObject listing = new JSONObject(getListing(subredditsURL));
                 JSONArray links = listing.getJSONObject("data").getJSONArray("children");
@@ -73,9 +70,9 @@ public class ImagePoolUpdater extends IntentService {
                 e.printStackTrace();
             }
             sendBroadcast(new Intent(AppConstants.BROADCAST_UPDATED));
-            if (prefs.getBoolean(AppConstants.PREF_CLEAR_OLD, false)) {
-                clearOld();
-            }
+        }
+        if (prefs.getBoolean(AppConstants.PREF_CLEAR_OLD, false)) {
+            clearOld();
         }
     }
 
@@ -144,7 +141,7 @@ public class ImagePoolUpdater extends IntentService {
         }
     }
 
-    private String buildURL() {
+    private String buildURL(SharedPreferences prefs) {
         StringBuilder url = new StringBuilder("http://www.reddit.com/r/");
         ArrayList<String> subreddits = new ArrayList<String>(prefs.getStringSet(AppConstants.PREF_SUBREDDITS, null));
         for (String sub : subreddits) {

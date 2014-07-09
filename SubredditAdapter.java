@@ -29,12 +29,10 @@ public class SubredditAdapter extends BaseAdapter {
 
     public void addSubreddit(String sub) {
         subreddits.add(sub);
-        persist();
     }
 
     public void removeSubreddit(int position) {
         subreddits.remove(position);
-        persist();
     }
 
     @Override
@@ -63,6 +61,7 @@ public class SubredditAdapter extends BaseAdapter {
             view = new TextView(mContext);
         }
         view.setText(subreddits.get(position));
+        // TODO: Add remove button
         return view;
     }
 
