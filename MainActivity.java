@@ -1,50 +1,38 @@
 package com.itskhanow.redditwallpaper.wallpaperchanger;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
+
+import java.util.HashSet;
 
 public class MainActivity extends ActionBarActivity {
-    protected GridView gridView;
-    protected ImageAdapter imageAdapter;
-
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            refreshGrid();
-        }
-    };
+    protected SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        prefs = getSharedPreferences(BuildConfig.PACKAGE_NAME, Context.MODE_PRIVATE);
+
+        // If it's the first run, add some default subreddits
+        if (prefs.getBoolean(AppConstants.PREF_FIRST_RUN, true)) {
+            HashSet<String> subreddits = new HashSet<String>();
+            subreddits.add("wallpaper");
+            subreddits.add("wallpapers");
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putStringSet(AppConstants.PREF_SUBREDDITS, subreddits);
+            editor.putBoolean(AppConstants.PREF_SERVICE_STARTED, false);
+            editor.putBoolean(AppConstants.PREF_FIRST_RUN, false);
+            editor.commit();
+        }
+
         startServices();
-
-        gridView = (GridView) findViewById(R.id.gridview);
-        refreshGrid();
-
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Intent iViewImage = new Intent(getApplicationContext(), ViewImageActivity.class);
-                iViewImage.putExtra(AppConstants.INTENT_EXTRA_POSITION, position);
-                startActivity(iViewImage);
-            }
-        });
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
 
         // TODO: Implement sidebar to manage subreddits
     }
@@ -72,26 +60,9 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void startServices() {
-        SharedPreferences prefs = getSharedPreferences(BuildConfig.PACKAGE_NAME, Context.MODE_PRIVATE);
         if (!prefs.getBoolean(AppConstants.PREF_SERVICE_STARTED, false)) {
             ServiceManager.startServices(this);
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        registerReceiver(receiver, new IntentFilter(AppConstants.BROADCAST_UPDATED));
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        unregisterReceiver(receiver);
-    }
-
-    protected  void refreshGrid() {
-        imageAdapter = new ImageAdapter(this);
-        gridView.setAdapter(imageAdapter);
-    }
 }

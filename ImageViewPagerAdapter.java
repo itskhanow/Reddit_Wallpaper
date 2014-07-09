@@ -26,7 +26,7 @@ public class ImageViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int i) {
         ImageViewFragment fragment = new ImageViewFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(AppConstants.BUNDLE_FILE, images[i].getAbsolutePath());
+        bundle.putString(AppConstants.ARG_FILE, images[i].getAbsolutePath());
         fragment.setArguments(bundle);
         return fragment;
     }

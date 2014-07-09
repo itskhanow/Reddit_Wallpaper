@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 
 /**
@@ -32,15 +33,17 @@ import java.net.URL;
  */
 public class ImagePoolUpdater extends IntentService {
     public static final String DIR = Environment.getExternalStorageDirectory().toString() + AppConstants.IMAGE_DIR;
+    private SharedPreferences prefs;
 
     public ImagePoolUpdater() {
         super("ImagePoolUpdater");
+        prefs = getSharedPreferences(BuildConfig.PACKAGE_NAME, Context.MODE_PRIVATE);
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null && connected()) {
-            SharedPreferences prefs = getSharedPreferences(BuildConfig.PACKAGE_NAME, Context.MODE_PRIVATE);
+            prefs = getSharedPreferences(BuildConfig.PACKAGE_NAME, Context.MODE_PRIVATE);
             File dir = new File(DIR);
             if (!dir.exists()) {
                 //noinspection ResultOfMethodCallIgnored
@@ -48,9 +51,9 @@ public class ImagePoolUpdater extends IntentService {
             }
 
             // TODO: Get subreddits from sharedpreferences
-            String subreddits = "http://www.reddit.com/r/wallpaper+wallpapers+minimalwallpaper.json";
+            String subredditsURL = buildURL();
             try {
-                JSONObject listing = new JSONObject(getListing(subreddits));
+                JSONObject listing = new JSONObject(getListing(subredditsURL));
                 JSONArray links = listing.getJSONObject("data").getJSONArray("children");
                 for (int i = 0; i < links.length(); i++) {
                     JSONObject thingData = links.getJSONObject(i).getJSONObject("data");
@@ -75,6 +78,7 @@ public class ImagePoolUpdater extends IntentService {
             }
         }
     }
+
 
     protected void clearOld() {
         File[] images = new File(DIR).listFiles();
@@ -138,6 +142,16 @@ public class ImagePoolUpdater extends IntentService {
                 }
             }
         }
+    }
+
+    private String buildURL() {
+        StringBuilder url = new StringBuilder("http://www.reddit.com/r/");
+        ArrayList<String> subreddits = new ArrayList<String>(prefs.getStringSet(AppConstants.PREF_SUBREDDITS, null));
+        for (String sub : subreddits) {
+            url.append(sub).append("+");
+        }
+        url.append(".json");
+        return url.toString();
     }
 
 }
