@@ -22,7 +22,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -32,8 +31,7 @@ import java.net.URL;
  *
  */
 public class ImagePoolUpdater extends IntentService {
-    public static final String BROADCAST_UPDATED = "com.itskhanow.redditwallpaper.wallpaperchanger.action.UPDATED";
-    public static final String DIR = Environment.getExternalStorageDirectory().toString() + "/reddit_wallpaper";
+    public static final String DIR = Environment.getExternalStorageDirectory().toString() + AppConstants.IMAGE_DIR;
 
     public ImagePoolUpdater() {
         super("ImagePoolUpdater");
@@ -42,7 +40,7 @@ public class ImagePoolUpdater extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null && connected()) {
-            SharedPreferences prefs = getSharedPreferences("com.itskhanow.redditwallpaper.wallpaperchanger", Context.MODE_PRIVATE);
+            SharedPreferences prefs = getSharedPreferences(BuildConfig.PACKAGE_NAME, Context.MODE_PRIVATE);
             File dir = new File(DIR);
             if (!dir.exists()) {
                 //noinspection ResultOfMethodCallIgnored
@@ -63,7 +61,7 @@ public class ImagePoolUpdater extends IntentService {
                     // TODO: Create methods to grab images from within album link
                     // Only save image if NSFW is allowed or it's SFW
                     if ((thingURL.endsWith(".jpg") || thingURL.endsWith(".png"))
-                            && (prefs.getBoolean("pref_show_nsfw", false) || !thingNSFW)) {
+                            && (prefs.getBoolean(AppConstants.PREF_SHOW_NSFW, false) || !thingNSFW)) {
                         saveImage(thingID, thingURL);
                     }
                     // TODO: Show progress bar notification
@@ -71,8 +69,8 @@ public class ImagePoolUpdater extends IntentService {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            sendBroadcast(new Intent(ImagePoolUpdater.BROADCAST_UPDATED));
-            if (prefs.getBoolean("pref_clear_old", false)) {
+            sendBroadcast(new Intent(AppConstants.BROADCAST_UPDATED));
+            if (prefs.getBoolean(AppConstants.PREF_CLEAR_OLD, false)) {
                 clearOld();
             }
         }

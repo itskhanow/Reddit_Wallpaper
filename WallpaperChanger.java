@@ -25,16 +25,16 @@ public class WallpaperChanger extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
-            if (intent.hasExtra("image")) {
+            if (intent.hasExtra(AppConstants.INTENT_EXTRA_IMAGE)) {
                 try {
-                    WallpaperManager.getInstance(getApplicationContext()).setBitmap(BitmapFactory.decodeFile(intent.getStringExtra("image")));
+                    WallpaperManager.getInstance(getApplicationContext()).setBitmap(BitmapFactory.decodeFile(intent.getStringExtra(AppConstants.INTENT_EXTRA_IMAGE)));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else {
-                SharedPreferences prefs = getSharedPreferences("com.itskhanow.redditwallpaper.wallpaperchanger", Context.MODE_PRIVATE);
-                if (prefs.getBoolean("pref_change_wallpaper_periodically", false)) {
-                    File dir = new File(Environment.getExternalStorageDirectory().toString() + "/reddit_wallpaper/");
+                SharedPreferences prefs = getSharedPreferences(BuildConfig.PACKAGE_NAME, Context.MODE_PRIVATE);
+                if (prefs.getBoolean(AppConstants.PREF_CHANGE_WALLPAPER, false)) {
+                    File dir = new File(Environment.getExternalStorageDirectory().toString() + AppConstants.IMAGE_DIR);
                     File[] images = dir.listFiles();
                     int i = new Random().nextInt(images.length);
                     try {

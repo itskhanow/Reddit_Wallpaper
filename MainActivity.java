@@ -38,10 +38,13 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Intent iViewImage = new Intent(getApplicationContext(), ViewImageActivity.class);
-                iViewImage.putExtra("position", position);
+                iViewImage.putExtra(AppConstants.INTENT_EXTRA_POSITION, position);
                 startActivity(iViewImage);
             }
         });
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         // TODO: Implement sidebar to manage subreddits
     }
@@ -56,13 +59,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
-            case R.id.action_shuffle:
-                startService(new Intent(getApplicationContext(), WallpaperChanger.class));
-                return true;
             case R.id.action_refresh:
                 startService(new Intent(getApplicationContext(), ImagePoolUpdater.class));
                 return true;
@@ -75,8 +72,8 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void startServices() {
-        SharedPreferences prefs = getSharedPreferences("com.itskhanow.redditwallpaper.wallpaperchanger", Context.MODE_PRIVATE);
-        if (!prefs.getBoolean("pref_service_started", false)) {
+        SharedPreferences prefs = getSharedPreferences(BuildConfig.PACKAGE_NAME, Context.MODE_PRIVATE);
+        if (!prefs.getBoolean(AppConstants.PREF_SERVICE_STARTED, false)) {
             ServiceManager.startServices(this);
         }
     }
@@ -84,7 +81,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver(receiver, new IntentFilter(ImagePoolUpdater.BROADCAST_UPDATED));
+        registerReceiver(receiver, new IntentFilter(AppConstants.BROADCAST_UPDATED));
     }
 
     @Override

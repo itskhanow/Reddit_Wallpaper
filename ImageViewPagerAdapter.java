@@ -5,7 +5,6 @@ import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.util.Log;
 
 import java.io.File;
 
@@ -17,7 +16,7 @@ public class ImageViewPagerAdapter extends FragmentStatePagerAdapter {
 
     public ImageViewPagerAdapter(FragmentManager fm) {
         super(fm);
-        File dir = new File(Environment.getExternalStorageDirectory().toString() + "/reddit_wallpaper/");
+        File dir = new File(Environment.getExternalStorageDirectory().toString() + AppConstants.IMAGE_DIR);
         if (dir.isDirectory()) {
             images = dir.listFiles();
         }
@@ -27,8 +26,7 @@ public class ImageViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int i) {
         ImageViewFragment fragment = new ImageViewFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("file_path", images[i].getAbsolutePath());
-        Log.i("getItem", "Path: " + bundle.getString("file_path"));
+        bundle.putString(AppConstants.BUNDLE_FILE, images[i].getAbsolutePath());
         fragment.setArguments(bundle);
         return fragment;
     }

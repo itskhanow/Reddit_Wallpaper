@@ -12,13 +12,13 @@ import android.view.MenuItem;
  * handset devices, settings are presented as a single list. On tablets,
  * settings are split by category, with category headers shown to the left of
  * the list of settings.
- * <p>
+ * <p/>
  * See <a href="http://developer.android.com/design/patterns/settings.html">
  * Android Design: Settings</a> for design guidelines and the <a
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
  * API Guide</a> for more information on developing a Settings UI.
  */
-public class SettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
+public class SettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +50,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-        if (key.equals("pref_change_wallpaper_periodically")) {
+        if (key.equals(AppConstants.PREF_CHANGE_WALLPAPER)) {
             ServiceManager.startServices(this);
         }
     }
@@ -58,12 +58,12 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     @Override
     protected void onResume() {
         super.onResume();
-        getSharedPreferences("com.itskhanow.redditwallpaper.wallpaperchanger", Context.MODE_PRIVATE).registerOnSharedPreferenceChangeListener(this);
+        getSharedPreferences(BuildConfig.PACKAGE_NAME, Context.MODE_PRIVATE).registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        getSharedPreferences("com.itskhanow.redditwallpaper.wallpaperchanger", Context.MODE_PRIVATE).unregisterOnSharedPreferenceChangeListener(this);
+        getSharedPreferences(BuildConfig.PACKAGE_NAME, Context.MODE_PRIVATE).unregisterOnSharedPreferenceChangeListener(this);
     }
 }

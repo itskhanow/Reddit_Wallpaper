@@ -1,12 +1,14 @@
 package com.itskhanow.redditwallpaper.wallpaperchanger;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 
 /**
@@ -20,6 +22,7 @@ public class ViewImageActivity extends FragmentActivity {
     ViewPager viewPager;
     ImageViewPagerAdapter pagerAdapter;
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,11 +32,13 @@ public class ViewImageActivity extends FragmentActivity {
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         pagerAdapter = new ImageViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
-        viewPager.setCurrentItem(getIntent().getIntExtra("position", 0));
-        Log.i("ViewImageActivity", "Position: " + viewPager.getCurrentItem());
+        viewPager.setCurrentItem(getIntent().getIntExtra(AppConstants.INTENT_EXTRA_POSITION, 0));
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+        if (Build.VERSION.SDK_INT > 16) {
+            viewPager.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+            viewPager.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        }
     }
 
     @Override
@@ -59,7 +64,7 @@ public class ViewImageActivity extends FragmentActivity {
         if (viewPager != null) {
             viewPager.getCurrentItem();
             Intent intent = new Intent(getApplicationContext(), WallpaperChanger.class);
-            intent.putExtra("image", pagerAdapter.getImagePath(viewPager.getCurrentItem()));
+            intent.putExtra(AppConstants.INTENT_EXTRA_IMAGE, pagerAdapter.getImagePath(viewPager.getCurrentItem()));
             startService(intent);
         }
     }

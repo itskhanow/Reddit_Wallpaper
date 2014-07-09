@@ -5,7 +5,6 @@ import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
@@ -16,13 +15,12 @@ import java.io.File;
  *
  */
 public class ImageAdapter extends BaseAdapter {
-    public final int imageSize = 300;
     private Context mContext;
     private File[] images;
 
     public ImageAdapter(Context c) {
         mContext = c;
-        File dir = new File(Environment.getExternalStorageDirectory().toString() + "/reddit_wallpaper/");
+        File dir = new File(Environment.getExternalStorageDirectory().toString() + AppConstants.IMAGE_DIR);
         if (dir.isDirectory()) {
             images = dir.listFiles();
         }
@@ -42,8 +40,6 @@ public class ImageAdapter extends BaseAdapter {
         return images[i];
     }
 
-    public File[] getImages() { return images; }
-
     @Override
     public long getItemId(int i) {
         return 0;
@@ -57,7 +53,7 @@ public class ImageAdapter extends BaseAdapter {
             //view.setLayoutParams(new GridView.LayoutParams(imageSize, imageSize));
             view.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
-        Picasso.with(mContext).load(getItem(position)).resize(imageSize, imageSize).centerCrop().into(view);
+        Picasso.with(mContext).load(getItem(position)).resize(AppConstants.IMAGE_SIZE, AppConstants.IMAGE_SIZE).centerCrop().into(view);
         return view;
     }
 }
