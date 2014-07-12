@@ -17,7 +17,7 @@ import android.view.WindowManager;
  *
  *
  */
-public class ViewImageActivity extends FragmentActivity {
+public class ImageViewActivity extends FragmentActivity {
 
     ViewPager viewPager;
     ImageViewPagerAdapter pagerAdapter;

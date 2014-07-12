@@ -1,12 +1,12 @@
 package com.itskhanow.redditwallpaper.wallpaperchanger;
 
-import android.app.ListFragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,17 +82,18 @@ public class SubredditFragment extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
+        refreshList();
         getActivity().registerReceiver(receiver, new IntentFilter(AppConstants.BROADCAST_SUBREDDIT_UPDATED));
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        subredditAdapter.persist();
         getActivity().unregisterReceiver(receiver);
     }
 
     private void refreshList() {
-        subredditAdapter = new SubredditAdapter(getActivity().getApplicationContext());
         setListAdapter(subredditAdapter);
     }
 

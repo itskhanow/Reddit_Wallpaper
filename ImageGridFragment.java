@@ -1,11 +1,11 @@
 package com.itskhanow.redditwallpaper.wallpaperchanger;
 
-import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +41,7 @@ public class ImageGridFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Intent iViewImage = new Intent(getActivity().getApplicationContext(), ViewImageActivity.class);
+                Intent iViewImage = new Intent(getActivity().getApplicationContext(), ImageViewActivity.class);
                 iViewImage.putExtra(AppConstants.INTENT_EXTRA_POSITION, position);
                 startActivity(iViewImage);
             }

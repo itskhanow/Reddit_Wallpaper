@@ -32,13 +32,11 @@ public class SubredditAdapter extends BaseAdapter {
 
     public void addSubreddit(String sub) {
         subreddits.add(sub);
-        persist();
         mContext.sendBroadcast(new Intent(AppConstants.BROADCAST_SUBREDDIT_UPDATED));
     }
 
     public void removeSubreddit(int position) {
         subreddits.remove(position);
-        persist();
         mContext.sendBroadcast(new Intent(AppConstants.BROADCAST_SUBREDDIT_UPDATED));
     }
 
@@ -80,7 +78,7 @@ public class SubredditAdapter extends BaseAdapter {
         return view;
     }
 
-    private void persist() {
+    public void persist() {
         Set<String> set = new HashSet<String>();
         set.addAll(subreddits);
         prefs.edit().putStringSet(AppConstants.PREF_SUBREDDITS, set).apply();
