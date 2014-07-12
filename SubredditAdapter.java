@@ -1,10 +1,13 @@
 package com.itskhanow.redditwallpaper.wallpaperchanger;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -29,10 +32,14 @@ public class SubredditAdapter extends BaseAdapter {
 
     public void addSubreddit(String sub) {
         subreddits.add(sub);
+        persist();
+        mContext.sendBroadcast(new Intent(AppConstants.BROADCAST_SUBREDDIT_UPDATED));
     }
 
     public void removeSubreddit(int position) {
         subreddits.remove(position);
+        persist();
+        mContext.sendBroadcast(new Intent(AppConstants.BROADCAST_SUBREDDIT_UPDATED));
     }
 
     @Override
@@ -55,17 +62,25 @@ public class SubredditAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        TextView view = (TextView) convertView;
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        ViewGroup view = (ViewGroup) convertView;
         if (view == null) {
-            view = new TextView(mContext);
+            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            view = (ViewGroup) inflater.inflate(R.layout.layout_subreddit, null);
         }
-        view.setText(subreddits.get(position));
-        // TODO: Add remove button
+        TextView textView = (TextView) view.findViewById(R.id.textView_subreddit);
+        Button button = (Button) view.findViewById(R.id.button_remove);
+        textView.setText(subreddits.get(position));
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeSubreddit(position);
+            }
+        });
         return view;
     }
 
-    public void persist() {
+    private void persist() {
         Set<String> set = new HashSet<String>();
         set.addAll(subreddits);
         prefs.edit().putStringSet(AppConstants.PREF_SUBREDDITS, set).apply();

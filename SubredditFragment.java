@@ -1,6 +1,10 @@
 package com.itskhanow.redditwallpaper.wallpaperchanger;
 
 import android.app.ListFragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -25,6 +29,12 @@ public class SubredditFragment extends ListFragment {
      * Views.
      */
     private SubredditAdapter subredditAdapter;
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            refreshList();
+        }
+    };
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -63,7 +73,6 @@ public class SubredditFragment extends ListFragment {
                 EditText textBox = (EditText) view.findViewById(R.id.add_text);
                 subredditAdapter.addSubreddit(textBox.getText().toString());
                 textBox.setText("");
-                // TODO: Update adapter
             }
         });
 
@@ -71,9 +80,20 @@ public class SubredditFragment extends ListFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().registerReceiver(receiver, new IntentFilter(AppConstants.BROADCAST_SUBREDDIT_UPDATED));
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
-        subredditAdapter.persist();
+        getActivity().unregisterReceiver(receiver);
+    }
+
+    private void refreshList() {
+        subredditAdapter = new SubredditAdapter(getActivity().getApplicationContext());
+        setListAdapter(subredditAdapter);
     }
 
 }

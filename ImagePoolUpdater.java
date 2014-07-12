@@ -69,7 +69,7 @@ public class ImagePoolUpdater extends IntentService {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            sendBroadcast(new Intent(AppConstants.BROADCAST_UPDATED));
+            sendBroadcast(new Intent(AppConstants.BROADCAST_IMAGEPOOL_UPDATED));
         }
         if (prefs.getBoolean(AppConstants.PREF_CLEAR_OLD, false)) {
             clearOld();

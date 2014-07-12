@@ -19,7 +19,8 @@ public class AppConstants {
     public static final String INTENT_EXTRA_POSITION = "position";
     public static final String INTENT_EXTRA_IMAGE = "image";
 
-    public static final String BROADCAST_UPDATED = "com.itskhanow.redditwallpaper.wallpaperchanger.action.UPDATED";
+    public static final String BROADCAST_IMAGEPOOL_UPDATED = "com.itskhanow.redditwallpaper.wallpaperchanger.action.imagepool_updated";
+    public static final String BROADCAST_SUBREDDIT_UPDATED = "com.itskhanow.redditwallpaper.wallpaperchanger.action.subreddit_updated";
 
     public static final int IMAGE_SIZE = 300;
 }

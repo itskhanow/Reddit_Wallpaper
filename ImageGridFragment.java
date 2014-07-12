@@ -52,7 +52,7 @@ public class ImageGridFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().registerReceiver(receiver, new IntentFilter(AppConstants.BROADCAST_UPDATED));
+        getActivity().registerReceiver(receiver, new IntentFilter(AppConstants.BROADCAST_IMAGEPOOL_UPDATED));
     }
 
     @Override
