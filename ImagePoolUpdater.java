@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Environment;
 
 import org.json.JSONArray;
@@ -41,7 +40,7 @@ public class ImagePoolUpdater extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         SharedPreferences prefs = getSharedPreferences(BuildConfig.PACKAGE_NAME, Context.MODE_PRIVATE);
-        if (intent != null && connected()) {
+        if (intent != null && connected(prefs)) {
             File dir = new File(DIR);
             if (!dir.exists()) {
                 //noinspection ResultOfMethodCallIgnored
@@ -88,10 +87,18 @@ public class ImagePoolUpdater extends IntentService {
         }
     }
 
-    protected boolean connected() {
+    protected boolean connected(SharedPreferences prefs) {
+        boolean connected = false;
         ConnectivityManager cmgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = cmgr.getActiveNetworkInfo();
-        return (networkInfo != null && networkInfo.isConnected());
+        // Check if WiFI is connected or user doesn't want wifi only
+        if (cmgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected()
+                || !prefs.getBoolean(AppConstants.PREF_WIFI_ONLY, false)) {
+            // Check if there is a connection at all
+            if (cmgr.getActiveNetworkInfo().isConnected()) {
+                connected = true;
+            }
+        }
+        return connected;
     }
 
     protected InputStream downloadStream(String location) {

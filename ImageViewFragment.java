@@ -11,6 +11,8 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
+import uk.co.senab.photoview.PhotoViewAttacher;
+
 
 /**
  *
@@ -31,6 +33,7 @@ public class ImageViewFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_image_view, container, false);
         ImageView imageView = (ImageView) rootView.findViewById(R.id.image_view);
         Picasso.with(getActivity().getApplicationContext()).load(new File(filePath)).into(imageView);
+        new PhotoViewAttacher(imageView);
         return rootView;
     }
 
