@@ -23,9 +23,6 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // I'll just keep using this for now since it still works
-        // TODO: Change to preference fragment if functionality ever breaks
-        //addPreferencesFromResource(R.xml.settings);
         getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
     }
 
@@ -39,9 +36,6 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             // more details, see the Navigation pattern on Android Design:
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
-            //
-            // TODO: If Settings has multiple levels, Up should navigate up
-            // that hierarchy.
             NavUtils.navigateUpFromSameTask(this);
             return true;
         }

@@ -26,9 +26,10 @@ public class ServiceManager {
             Intent iChangeWallpaper = new Intent(context, WallpaperChanger.class);
             PendingIntent piChangeWallpaper = PendingIntent.getService(context, 0, iChangeWallpaper, 0);
             AlarmManager amChangeWallpaper = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            long alarmInterval = Long.parseLong(prefs.getString(AppConstants.PREF_UPDATE_INTERVAL, String.valueOf(AlarmManager.INTERVAL_HALF_HOUR)));
             amChangeWallpaper.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
-                    Long.getLong(prefs.getString(AppConstants.PREF_UPDATE_INTERVAL, String.valueOf(AlarmManager.INTERVAL_HALF_HOUR))),
-                    Long.getLong(prefs.getString(AppConstants.PREF_UPDATE_INTERVAL, String.valueOf(AlarmManager.INTERVAL_HALF_HOUR))),
+                    alarmInterval,
+                    alarmInterval,
                     piChangeWallpaper);
         }
 
