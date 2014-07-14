@@ -44,8 +44,8 @@ public class ImagePoolUpdater extends IntentService {
         SharedPreferences prefs = getSharedPreferences(BuildConfig.PACKAGE_NAME, Context.MODE_PRIVATE);
         if (intent != null && connected(prefs)) {
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext())
-                    .setContentTitle("Reddit Wallpaper")
-                    .setContentText("Downloading images from reddit")
+                    .setContentTitle(getString(R.string.app_name))
+                    .setContentText(getString(R.string.notification_text))
                     .setSmallIcon(R.drawable.ic_action_download_image);
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             int notificationID = 1;
