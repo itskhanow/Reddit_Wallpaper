@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -67,7 +67,7 @@ public class SubredditAdapter extends BaseAdapter {
             view = (ViewGroup) inflater.inflate(R.layout.layout_subreddit, null);
         }
         TextView textView = (TextView) view.findViewById(R.id.textView_subreddit);
-        Button button = (Button) view.findViewById(R.id.button_remove);
+        ImageButton button = (ImageButton) view.findViewById(R.id.button_remove);
         textView.setText(subreddits.get(position));
         button.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -4,8 +4,8 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,10 +14,8 @@ import android.view.WindowManager;
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
- *
- *
  */
-public class ImageViewActivity extends FragmentActivity {
+public class ImageViewActivity extends ActionBarActivity {
 
     ViewPager viewPager;
     ImageViewPagerAdapter pagerAdapter;

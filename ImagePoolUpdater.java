@@ -1,6 +1,7 @@
 package com.itskhanow.redditwallpaper.wallpaperchanger;
 
 import android.app.IntentService;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.os.Environment;
+import android.support.v4.app.NotificationCompat;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,6 +43,15 @@ public class ImagePoolUpdater extends IntentService {
     protected void onHandleIntent(Intent intent) {
         SharedPreferences prefs = getSharedPreferences(BuildConfig.PACKAGE_NAME, Context.MODE_PRIVATE);
         if (intent != null && connected(prefs)) {
+            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext())
+                    .setContentTitle("Reddit Wallpaper")
+                    .setContentText("Downloading images from reddit")
+                    .setSmallIcon(R.drawable.ic_action_download_image);
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            int notificationID = 1;
+            notificationBuilder.setProgress(1, 0, true);
+            notificationManager.notify(notificationID, notificationBuilder.build());
+
             File dir = new File(DIR);
             if (!dir.exists()) {
                 //noinspection ResultOfMethodCallIgnored
@@ -63,11 +74,13 @@ public class ImagePoolUpdater extends IntentService {
                             && (prefs.getBoolean(AppConstants.PREF_SHOW_NSFW, false) || !thingNSFW)) {
                         saveImage(thingID, thingURL);
                     }
-                    // TODO: Show progress bar notification
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            notificationBuilder.setProgress(0, 0, false);
+            notificationManager.notify(notificationID, notificationBuilder.build());
+            notificationManager.cancel(notificationID);
         }
         if (prefs.getBoolean(AppConstants.PREF_CLEAR_OLD, false)) {
             clearOld();
