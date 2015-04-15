@@ -56,7 +56,7 @@ public class MainActivity extends ActionBarActivity {
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         actionBar.addTab(actionBar.newTab().setText("Wallpapers").setTabListener(tabListener));
         actionBar.addTab(actionBar.newTab().setText("Subreddits").setTabListener(tabListener));
-
+	//Comment
         viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int i) {
